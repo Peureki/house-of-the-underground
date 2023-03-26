@@ -3,7 +3,7 @@
     <div class="nav-links">
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
-      <router-link to="/timeline">Timeline</router-link>
+      <router-link to="/history">History</router-link>
       <router-link to="/shuffle">Shuffle</router-link>
       <router-link to="/events">Events</router-link>
       <router-link to="/collections">Collections</router-link>
@@ -14,24 +14,70 @@
     </div>
     
   </nav>
-  <router-view/>
+  <!-- <router-view/> -->
+  <router-view v-slot="{Component}">
+    <transition name="route" mode="out-in">
+      <component :is="Component"></component>
+    </transition>
+  </router-view>
 </template>
 
-<script>
+<script setup>
 import { ref, provide } from 'vue';
+import { gsap } from 'gsap';
 
-export default{
-  setup(){
-    // Check if screen is mobile size or not
-    // Inject isMobile to other child components if needed
-    const isMobile = ref(false);
-    window.innerWidth <= 768 ? isMobile.value = true : isMobile.value = false; 
+// Check if screen is mobile size or not
+// Inject isMobile to other child components if needed
+const isMobile = ref(false);
+window.innerWidth <= 768 ? isMobile.value = true : isMobile.value = false; 
 
-    provide('isMobile', isMobile);
+const gsapRepeatWords = (words) => {
+  let gsapStagger = 0,
+      gsapOpacity = 0; 
 
-    return {isMobile}
+  for (let i = 1; i < words.length; i++){
+    if (i < 3){
+      gsapStagger = 100;
+      gsapOpacity = 0.2;
+
+      if (isMobile.value){
+        gsapStagger = 50;
+      }
+    } else if (i >= 3){
+      gsapStagger = 200;
+      gsapOpacity = 0.1;
+
+      if (isMobile.value){
+        gsapStagger = 100;
+      }
+    }
+    if (i % 2 == 0){
+      //even
+      gsap.to(words[i], {
+        y: gsapStagger,
+        duration: 2,
+        opacity: gsapOpacity,
+        ease: "power3"
+      });
+  } else {
+      // odd
+      gsap.to(words[i], {
+        y: -gsapStagger,
+        duration: 2,
+        opacity: gsapOpacity,
+        ease: "power3"
+      });
+    }
   }
 }
+const scrollToTop = () => {
+  window.scrollTo(0,0);
+}
+
+provide('isMobile', isMobile);
+provide('gsapRepeatWords', gsapRepeatWords);
+
+
 
 </script>
 
@@ -64,8 +110,10 @@ html,body
     height: 100%;
     margin: 0px;
     padding: 0px;
-    scroll-behavior: smooth;
-    overflow-x: hidden; 
+    /* overflow-x: hidden;  */
+}
+html{
+  overflow-x: hidden;
 }
 
 body {
@@ -167,10 +215,18 @@ h2{
 h3{
   font-size: var(--fontSize-h3);
 }
+h4{
+  font-size: var(--fontSize-h4);
+}
+h5{
+  font-size: var(--fontSize-h5);
+}
+.header-highlight h3{
+  color: var(--color-highlight);
+}
 
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -185,6 +241,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid var(--color-secondary);
+  background-color: var(--color-bkg);
   padding: 10px;
   z-index: 1000;
 }
@@ -203,6 +260,7 @@ button{
   padding: 5px;
   background-color: var(--color-accent);
   border: none;
+  cursor: pointer;
 }
 
 nav a.router-link-exact-active {
@@ -214,6 +272,34 @@ nav a.router-link-exact-active {
     width: 100%;
     height: 100vh;
 }
+.full-container-3x{
+  position: relative;
+  height: 300vh;
+  padding-inline: 50px;
+  padding-bottom: 25vh;
+}
+/*
+ *
+ *
+ ROUTE TRANSITIONS
+ *
+ *
+ */
+.route-enter-from{
+  opacity: 0;
+  transform: translateX(100px);
+}
+.route-enter-active{
+  transition: all 0.3s ease; 
+}
+.route-leave-to{
+  opacity: 0;
+  transform: translateX(-100px);
+}
+.route-leave-active{
+  transition: all 0.3s ease;
+}
+
 :root{
   --font-family-h: 'Koulen', cursive;
   --font-family-p: 'Doppio One', sans-serif;
@@ -223,13 +309,16 @@ nav a.router-link-exact-active {
   --color-secondary: #FFFFFF; 
   /* --color-accent: #f6ea00; */
   --color-accent: #27e96a;
+  --color-highlight: #f6ea00;
   /* --color-accent: #f7a000; */
   /* --color-accent: #640fa3; */
   --color-gray: #34352f;
 
   --fontSize-h1: clamp(200px, 50vw, 1200px);
-  --fontSize-h2: clamp(50px, 30vw, 200px);
-  --fontSize-h3: clamp(30px, 15vw, 100px);
+  --fontSize-h2: clamp(75px, 15vw, 200px);
+  --fontSize-h3: clamp(50px, 10vw, 100px);
+  --fontSize-h4: clamp(40px, 8vw, 60px);
+  --fontSize-h5: clamp(30px, 7vw, 40px);
   --fontSize-p: clamp(16px, 5vw, 20px);
 }
 </style>
