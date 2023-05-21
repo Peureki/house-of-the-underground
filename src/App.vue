@@ -74,8 +74,13 @@ const scrollToTop = () => {
   window.scrollTo(0,0);
 }
 
+const addHyphens = (str) => {
+  return str.replace(/\s+/g, "-");
+}
+
 provide('isMobile', isMobile);
 provide('gsapRepeatWords', gsapRepeatWords);
+provide('addHyphens', addHyphens);
 
 
 
@@ -243,7 +248,7 @@ nav {
   border-top: 1px solid var(--color-secondary);
   background-color: var(--color-bkg);
   padding: 10px;
-  z-index: 1000;
+  z-index: 10000;
 }
 nav a {
   color: var(--color-secondary);
@@ -315,10 +320,15 @@ nav a.router-link-exact-active {
   --color-gray: #34352f;
 
   --fontSize-h1: clamp(200px, 50vw, 1200px);
-  --fontSize-h2: clamp(75px, 15vw, 200px);
+  --fontSize-h2: clamp(75px, 15vw, 500px);
   --fontSize-h3: clamp(50px, 10vw, 100px);
   --fontSize-h4: clamp(40px, 8vw, 60px);
   --fontSize-h5: clamp(30px, 7vw, 40px);
-  --fontSize-p: clamp(16px, 5vw, 20px);
+  --fontSize-p: clamp(16px, 3vw, 20px);
+  --fontSize-timeline-title: clamp(15px, 6vw, 40px);
+  --fontSize-timeline-header: clamp(14px, 4vw, 20px);
+  --fontSize-timeline-subheader: clamp(13px, 1.5vw, 16px);
+
+  --svg-arrow-size: clamp(30px, 5vw, 50px);
 }
 </style>

@@ -1,21 +1,22 @@
 <template>
 <div class="full-container">
     <div class="headers-container" ref="headerContainer">
-        <h2>History</h2>
-        <h2>History</h2>
-        <h2>History</h2>
-        <h2>History</h2>
-        <h2>History</h2>
+        <h2>{{ title }}</h2>
+        <h2>{{ title }}</h2>
+        <h2>{{ title }}</h2>
+        <h2>{{ title }}</h2>
+        <h2>{{ title }}</h2>
     </div>
-    
-    <div class="timelineLine"></div>
-    <div class="scrollArrow"></div>
 </div>
 
 </template>
 
 <script setup>
 import {ref, onMounted, inject} from 'vue';
+
+const props = defineProps({
+    title: String,
+});
 
 let headerContainer = ref(null);
 const gsapRepeatWords = inject('gsapRepeatWords');
@@ -38,11 +39,5 @@ onMounted(() => {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.timelineLine{
-    position: absolute;
-    top: 80%;
-    width: 100%;
-    height: 2px;
-    background-color: var(--color-secondary);
-}
+
 </style>
